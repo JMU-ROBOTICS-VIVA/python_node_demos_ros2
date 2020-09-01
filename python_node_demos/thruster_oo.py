@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-"""Example of a ROS node using Python's OO features.  The node is
+"""Example of a ROS2 node using Python's OO features.  The node is
 represented as a class.  Sensor messages are stored in instance
 variables.
 
 Author: Nathan Sprague
-Version: 1/15/2019
+Version: 7/22/2020
 
 """
 import rclpy
@@ -22,10 +22,10 @@ class ThrusterNode(rclpy.node.Node):
         self.location = None # Stores recently received location messages.
 
         self.thrust_pub = self.create_publisher(Vector3, 'thrust', 10)
+
         self.create_timer(.1, self.timer_callback)
         
-        self.create_subscription(Point, 'location',
-                                 self.location_callback, 10)
+        self.create_subscription(Point, 'location', self.location_callback, 10)
 
         self.target_altitude = 100.0
 

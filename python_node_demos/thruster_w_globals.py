@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Example of a ROS node that uses globals to store the
+"""Example of a ROS2 node that uses globals to store the
 values received from sensor callbacks.  Not very good style.
 
 Author: Nathan Sprague
