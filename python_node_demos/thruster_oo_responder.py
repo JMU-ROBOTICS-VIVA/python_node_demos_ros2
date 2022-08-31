@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Python class illustrating a style of ROS2 node with no timer callback.
 
 This node doesn't store incoming sensor messages.  Instead it responds
@@ -16,9 +15,10 @@ from geometry_msgs.msg import Point
 from geometry_msgs.msg import Vector3
 
 class ThrusterNode(rclpy.node.Node):
+
     def __init__(self):
         super().__init__('thruster')
-        
+
         self.create_subscription(Point, 'location', self.location_callback, 10)
 
         self.thrust_pub = self.create_publisher(Vector3, 'thrust', 10)
@@ -44,4 +44,3 @@ if __name__ == "__main__":
 
     thruster_node.destroy_node()
     rclpy.shutdown()
-
