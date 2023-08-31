@@ -4,7 +4,7 @@
 values received from sensor callbacks.  Not very good style.
 
 Author: Nathan Sprague
-Version: 7/22/2020
+Version: 8/31/2023
 
 """
 import rclpy
@@ -13,58 +13,56 @@ from geometry_msgs.msg import Point
 from geometry_msgs.msg import Vector3
 
 # globals
-LOCATION = None
-PUBLISHER = None
-NODE = None
+location = None
+publisher = None
+node = None
 TARGET_ALTITUDE = 100
+
 
 # This function will be called every time a new location message arrives.
 def location_callback(loc_msg):
-    """ loc_msg will be of type Point """
+    """loc_msg will be of type Point."""
 
-    global LOCATION # prevents creation of a local LOCATION variable.
-    LOCATION = loc_msg
+    global location  # prevents creation of a local location variable.
+    location = loc_msg
 
 
 def timer_callback():
-    
-    if LOCATION is not None:
+
+    if location is not None:
         thrust = Vector3()
-        
-        if LOCATION.y < TARGET_ALTITUDE:
+
+        if location.y < TARGET_ALTITUDE:
             thrust.y = 100.0
-            NODE.get_logger().info("THRUSTERS ENGAGED")
+            node.get_logger().info("THRUSTERS ENGAGED")
         else:
             thrust.y = 0.0
-            
-        PUBLISHER.publish(thrust)
 
-    
-def main():
-    """ Initialize the node """
+        publisher.publish(thrust)
+
+
+def main(args=None):
+    """Initialize the node."""
 
     # Switch on ROS communication.
-    rclpy.init()
+    rclpy.init(args=args)
 
     # Create a node object that will be used to manage ROS communication.
-    global NODE
-    NODE = rclpy.create_node('thruster')
-    
-    global PUBLISHER
-    PUBLISHER = NODE.create_publisher(Vector3, 'thrust', 10)
-    NODE.create_timer(.1, timer_callback)
-    
+    global node
+    node = rclpy.create_node('thruster')
+
+    global publisher
+    publisher = node.create_publisher(Vector3, 'thrust', 10)
+    node.create_timer(.1, timer_callback)
+
     # Subscribe to the location topic.
-    NODE.create_subscription(Point, 'location', location_callback, 10)
+    node.create_subscription(Point, 'location', location_callback, 10)
 
+    rclpy.spin(node)
 
-    rclpy.spin(NODE)
-
-
-    NODE.destroy_node()
+    node.destroy_node()
     rclpy.shutdown()
 
 
-# This is how we usually call the main method in Python. 
 if __name__ == "__main__":
     main()

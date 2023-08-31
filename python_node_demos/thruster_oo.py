@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-"""Example of a ROS2 node using Python's OO features.  The node is
-represented as a class.  Sensor messages are stored in instance
-variables.
+"""Example of a ROS2 node using Python's OO features.
+
+The node is represented as a class.  Sensor messages are stored in
+instance variables.
 
 Author: Nathan Sprague
-Version: 7/22/2020
+Version: 8/31/2023
 
 """
 import rclpy
@@ -14,23 +15,24 @@ import rclpy.node
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Vector3
 
+
 class ThrusterNode(rclpy.node.Node):
-    
+
     def __init__(self):
         super().__init__('thruster')
 
-        self.location = None # Stores recently received location messages.
+        self.location = None  # Stores recently received location messages.
 
         self.thrust_pub = self.create_publisher(Vector3, 'thrust', 10)
 
         self.create_timer(.1, self.timer_callback)
-        
+
         self.create_subscription(Point, 'location', self.location_callback, 10)
 
         self.target_altitude = 100.0
 
     def location_callback(self, loc_msg):
-        """ loc_msg will be of type Point """
+        """loc_msg will be of type Point."""
         self.location = loc_msg
 
     def timer_callback(self):
@@ -43,13 +45,15 @@ class ThrusterNode(rclpy.node.Node):
                 thrust.y = 0.0
             self.thrust_pub.publish(thrust)
 
-def main():
-    rclpy.init()
+
+def main(args=None):
+    rclpy.init(args=args)
     thruster_node = ThrusterNode()
     rclpy.spin(thruster_node)
 
     thruster_node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()

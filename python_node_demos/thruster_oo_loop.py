@@ -10,7 +10,7 @@ Note that this approach raises the danger of race conditions since
 callbacks may happen during the execution of the main loop.
 
 Author: Nathan Sprague
-Version: 8/31/2022
+Version: 8/31/2023
 
 """
 import rclpy
@@ -19,6 +19,7 @@ from rclpy.executors import MultiThreadedExecutor
 
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Vector3
+
 
 class ThrusterNode(rclpy.node.Node):
 
@@ -29,7 +30,7 @@ class ThrusterNode(rclpy.node.Node):
         # to execute simultaneously.  This is not the default!
         group = rclpy.callback_groups.ReentrantCallbackGroup()
 
-        self.location = None # Stores recently received location messages.
+        self.location = None  # Stores recently received location messages.
 
         self.thrust_pub = self.create_publisher(Vector3, 'thrust', 10)
 
@@ -69,8 +70,8 @@ class ThrusterNode(rclpy.node.Node):
             rate.sleep()  # Sleep long enough to maintain the desired rate.
 
 
-def main():
-    rclpy.init()
+def main(args=None):
+    rclpy.init(args=args)
     thruster_node = ThrusterNode()
 
     # We need at least two threads: one for the main loop, one for the
@@ -81,6 +82,7 @@ def main():
 
     thruster_node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()
